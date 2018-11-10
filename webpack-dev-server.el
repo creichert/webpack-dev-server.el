@@ -9,8 +9,33 @@
 ;;; Use M-x webpack-dev-server to launch
 ;;;
 ;;; License: MIT
+;;;
+;;; Code:
 
-(require 'projectile)
+(defgroup webpack-dev-server nil
+  "Webpack Dev Server mode for Emacs"
+  :group 'programming
+  :prefix "webpack-dev-server-")
+
+(defcustom webpack-dev-server-command  "webpack-dev-server"
+  "Command to run webpack-dev-server."
+  :group 'webpack-dev-server
+  :type 'string)
+
+(defcustom webpack-dev-server-host "localhost"
+  "Host of the webpack-dev-server"
+  :group 'webpack-dev-server
+  :type 'string)
+
+(defcustom webpack-dev-server-port "8080"
+  "Command to run webpack-dev-server."
+  :group 'webpack-dev-server
+  :type 'string)
+
+(defcustom webpack-dev-server-project-root "."
+  "Directory to run webpack-dev-server in."
+  :group 'webpack-dev-server
+  :type 'string)
 
 (setq webpack-dev-server-height 30)
 
@@ -22,19 +47,20 @@
   ;;(nlinum-mode -1)
   (linum-mode -1)
   ;; add error regexp for webpack errors
-  (add-to-list 'compilation-error-regexp-alist-alist
-               '(webpack "\\(?:ERROR\\|\\(WARNING\\)\\).* \\(at\\|on\\|in\\) \\([a-zA-Z\.0-9_/-]+\\):\\([0-9]+\\)"
-                           3 ;; file
-                           4 ;; line
-                           nil ;; column
-                           (0 . 1)))
+  (add-to-list
+   'compilation-error-regexp-alist-alist
+   '(webpack "\\(?:ERROR\\|\\(WARNING\\)\\).* \\(at\\|on\\|in\\) \\([a-zA-Z\.0-9_/-]+\\):\\([0-9]+\\)"
+             3   ;; file
+             4   ;; line
+             nil ;; column
+             (0 . 1)))
   (add-to-list 'compilation-error-regexp-alist 'webpack)
   (compilation-minor-mode))
 
 (defun new-webpack-dev-server-term ()
   (interactive)
   (kill-webpack-dev-server)
-  (setq-local default-directory (projectile-project-root))
+  (setq-local default-directory webpack-dev-server-project-root)
   (let ((webpack-dev-server-buf (get-buffer-create webpack-dev-server-buf-name)))
     (display-buffer
      webpack-dev-server-buf
@@ -62,22 +88,20 @@
 
 (defun add-stars (s) (format "*%s*" s))
 
-(defun webpack-dev-server-command ()
-  (format "make frontend-dev\n"))
-
-;; TODO Close stuff if it fails
+;;;###autoload
 (defun webpack-dev-server ()
   "Run webpack-dev-server"
   (interactive)
   (let ((cur (selected-window)))
     (new-webpack-dev-server-term)
-    (comint-send-string webpack-dev-server-buf-name (webpack-dev-server-command))
+    (comint-send-string webpack-dev-server-buf-name (format "%s\n" webpack-dev-server-command))
     (select-window cur)))
 
-;; Assumes that only one window is open
+;;;###autoload
 (defun webpack-dev-server-stop ()
   "Stop webpack-dev-server"
   (interactive)
+  ;; Assumes that only one window is open
   (let* ((webpack-dev-server-buf (get-buffer webpack-dev-server-buf-name))
          (webpack-dev-server-window (get-buffer-window webpack-dev-server-buf)))
     (when webpack-dev-server-buf
@@ -85,5 +109,13 @@
         (kill-webpack-dev-server)
         (select-window webpack-dev-server-window)
         (kill-buffer-and-window)))))
+
+;;;###autoload
+(defun webpack-dev-server-browse ()
+  "Browse the webpack dev server index."
+  (interactive)
+  (let ((url (concat "http://" webpack-dev-server-host ":"  webpack-dev-server-port)))
+    (run-with-timer 2 nil 'browse-url url)))
+
 
 (provide 'webpack-dev-server)

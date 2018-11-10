@@ -11,18 +11,33 @@ Clone the package:
 $ git clone https://github.com/creichert/webpack-dev-server.el 
 ```
 
-Enable with your mode of choice:
+`webpack-dev-server.el` does not require any configuration. By default, you can
+load the mode and run `M-x webpack-dev-server` and everything will "just work"
+if webpack-dev-server is configured on your machine properly.
+
+The following example shows how to customize `webpack-dev-server.el` with
+`projectile`:
 
 ```elisp
 (use-package webpack-dev-server
-  :defer
-  :load-path "site-lisp/"
-  :preface
-  (defun webpack-dev-server-command (h)
-    (format "make frontend-dev\n"))
+  :load-path "site-lisp/webpack-dev-server.el"
+  :commands (webpack-dev-server)
+
+  ;; Use any custom command to launch webpack
+  :custom
+  (webpack-dev-server-command  "make webpack-dev-server")
+
+  ;; Always run webpack-dev-server from projectile-project-root
+  :config
+  (use-package projectile :demand :ensure t)
+  (setq webpack-dev-server-project-root (projectile-project-root))
+
+  ;; Binding within projectile-mode-map is not required, but I primarily use
+  ;; webpack-dev-server inside projectile projects
   :bind (:map projectile-mode-map
-              ("C-c w p" . webpack-dev-server))
-              ("C-c w p" . webpack-dev-server-browse)))
+              ("C-c w p" . webpack-dev-server)
+              ("C-c w k" . webpack-dev-server-stop)
+              ("C-c w b" . webpack-dev-server-browse)))
 ```
 
 

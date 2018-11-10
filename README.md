@@ -1,6 +1,6 @@
 <div align="center">
   <h1>webpack-dev-server.el</h1>
-  <i>Emacs minor mode to help you manage webpack-dev-server</i> 
+  <i>Emacs mode to help you manage webpack-dev-server</i>
 </div>
 
 ### Installation

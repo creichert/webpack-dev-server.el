@@ -62,7 +62,7 @@
 
 (defun add-stars (s) (format "*%s*" s))
 
-(defun webpack-dev-server-command (h)
+(defun webpack-dev-server-command ()
   (format "make frontend-dev\n"))
 
 ;; TODO Close stuff if it fails
@@ -71,7 +71,7 @@
   (interactive)
   (let ((cur (selected-window)))
     (new-webpack-dev-server-term)
-    (comint-send-string webpack-dev-server-buf-name (webpack-dev-server-command webpack-dev-server-height))
+    (comint-send-string webpack-dev-server-buf-name (webpack-dev-server-command))
     (select-window cur)))
 
 ;; Assumes that only one window is open

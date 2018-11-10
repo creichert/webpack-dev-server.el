@@ -8,7 +8,7 @@
 Clone the package:
 
 ```
-$ git clone https://github.com/creichert/webpack-dev-server.el 
+$ git clone https://github.com/creichert/webpack-dev-server.el
 ```
 
 `webpack-dev-server.el` does not require any configuration. By default, you can
@@ -32,8 +32,9 @@ The following example shows how to customize `webpack-dev-server.el` with
   (use-package projectile :demand :ensure t)
   (setq webpack-dev-server-project-root (projectile-project-root))
 
-  ;; Binding within projectile-mode-map is not required, but I primarily use
-  ;; webpack-dev-server inside projectile projects
+  ;; Binding within projectile-mode-map is not required,
+  ;; but I primarily use webpack-dev-server inside
+  ;; projectile projects
   :bind (:map projectile-mode-map
               ("C-c w p" . webpack-dev-server)
               ("C-c w k" . webpack-dev-server-stop)

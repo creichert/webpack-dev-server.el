@@ -37,8 +37,6 @@
   :group 'webpack-dev-server
   :type 'string)
 
-(setq webpack-dev-server-height 30)
-
 (setq webpack-dev-server-buf-name "*webpack-dev-server*")
 
 (define-minor-mode webpack-dev-server-mode
@@ -62,18 +60,11 @@
   (kill-webpack-dev-server)
   (setq-local default-directory webpack-dev-server-project-root)
   (let ((webpack-dev-server-buf (get-buffer-create webpack-dev-server-buf-name)))
-    (display-buffer
-     webpack-dev-server-buf
-     '((display-buffer-at-bottom
-        display-buffer-pop-up-window
-        display-buffer-reuse-window)
-       (window-height . 30)))
-    (select-window (get-buffer-window webpack-dev-server-buf))
+    (switch-to-buffer-other-window webpack-dev-server-buf)
     (make-term "webpack-dev-server" "/bin/bash")
     (term-mode)
     (term-char-mode)
     (term-set-escape-char ?\C-x)
-    (setq-local term-buffer-maximum-size webpack-dev-server-height)
     (setq-local scroll-down-aggressively 1)
     (setq-local compilation-scroll-output 'first-error)
     (webpack-dev-server-mode)))
